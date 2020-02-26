@@ -10,6 +10,8 @@ import { User } from '../../types';
 import { getString } from '../../../STRINGS';
 import styled from 'styled-components/native';
 import { useThemeContext } from '@dooboo-ui/native-theme';
+import { showAlertForGrpahqlError } from '../../utils/common';
+import { MutationRemoveFriend, MUTATION_REMOVE_FRIEND } from '../../graphql/mutations';
 
 const StyledView = styled.View`
   margin-top: 40px;
@@ -109,6 +111,7 @@ const styles: Styles = {
 
 const Shared = forwardRef<Ref, Props>((props, ref) => {
   let modal: Modal | null;
+  const [removeFriend] = useMutation<{ id: string }, MutationRemoveFriend>(MUTATION_REMOVE_FRIEND);
   const [showAddBtn, setShowAddBtn] = useState(true);
   const [isFriendAdded, setIsFriendAdded] = useState(false);
   const [user, setUser] = useState<User>({
@@ -158,9 +161,19 @@ const Shared = forwardRef<Ref, Props>((props, ref) => {
     }
   };
 
-  const deleteFriend = (): void => {
+  const deleteFriend = async (): Promise<void> => {
     if (modal) {
       modal.close();
+    }
+
+    const variables = {
+      id: user.id
+    };
+  
+    try {
+      await removeFriend({ variables })
+    } catch ({ graphQLErrors }) {
+      showAlertForGrpahqlError(graphQLErrors);
     }
   };
 
@@ -271,3 +284,4 @@ const Shared = forwardRef<Ref, Props>((props, ref) => {
 });
 
 export default Shared;
+
