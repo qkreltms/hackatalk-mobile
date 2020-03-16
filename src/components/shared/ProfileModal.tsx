@@ -169,7 +169,7 @@ const Shared = forwardRef<Ref, Props>((props, ref) => {
     const variables = {
       id: user.id
     };
-  
+
     try {
       await removeFriend({ variables })
     } catch ({ graphQLErrors }) {
@@ -284,5 +284,6 @@ const Shared = forwardRef<Ref, Props>((props, ref) => {
 });
 
 export default Shared;
+
 
 
