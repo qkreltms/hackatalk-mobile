@@ -68,7 +68,7 @@ export interface MutationRemoveFriend {
 
 export const MUTATION_REMOVE_FRIEND = gql`
   mutation deleteFriend($id: ID!) {
-    deleteFriend(friendId: $id) {
+    deleteFriend(id: $id) {
       id
     }
   }
