@@ -12,6 +12,7 @@ import styled from 'styled-components/native';
 import { useThemeContext } from '@dooboo-ui/native-theme';
 import { showAlertForGrpahqlError } from '../../utils/common';
 import { MutationDeleteFriend, MUTATION_DELETE_FRIEND } from '../../graphql/mutations';
+import { useFriendContext } from '../../providers/FriendProvider';
 
 const StyledView = styled.View`
   margin-top: 40px;
@@ -136,6 +137,12 @@ const Shared = forwardRef<Ref, Props>((props, ref) => {
     fetchPolicy: 'network-only',
   });
 
+  const {
+    friendState: { friends },
+    addFriend: ctxAddFriend,
+    deleteFriend: ctxDeleteFriend,
+  } = useFriendContext();
+
   const open = (): void => {
     setIsFriendAdded(false);
     if (modal) {
@@ -167,11 +174,12 @@ const Shared = forwardRef<Ref, Props>((props, ref) => {
     }
 
     const variables = {
-      id: user.id
+      friendId: user.id
     };
 
     try {
-      await deleteFriendMutation({ variables })
+      await deleteFriendMutation({ variables });
+      ctxDeleteFriend(user);
     } catch ({ graphQLErrors }) {
       showAlertForGrpahqlError(graphQLErrors);
     }
