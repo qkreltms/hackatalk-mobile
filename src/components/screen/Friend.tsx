@@ -12,6 +12,7 @@ import { getString } from '../../../STRINGS';
 import styled from 'styled-components/native';
 import { useProfileContext } from '../../providers/ProfileModalProvider';
 import { useQuery } from '@apollo/react-hooks';
+import { useFriendContext } from '../../providers/FriendProvider';
 
 const Container = styled.View`
   flex: 1;
@@ -23,13 +24,23 @@ const Container = styled.View`
 
 export default function Screen(): ReactElement {
   const { state, showModal } = useProfileContext();
-
+  const {
+    friendState: { friends },
+    setFriends: ctxSetFriends,
+  } = useFriendContext();
+  
   // prettier-ignore
   const { loading, data, error, refetch } = useQuery<{
     friends: User[];
   }>(QUERY_FRIENDS, {
     fetchPolicy: 'network-only',
   });
+  useEffect(() => {
+    const friends = data?.friends;
+    if (friends) {
+      ctxSetFriends(friends);
+    }
+  }, [data])
 
   const userListOnPress = (user: User): void => {
     if (state.modal) {
@@ -82,7 +93,7 @@ export default function Screen(): ReactElement {
         }}
         contentContainerStyle={
           // prettier-ignore
-          data?.friends.length === 0
+          friends.length === 0
             ? {
               flex: 1,
               alignItems: 'center',
@@ -91,7 +102,7 @@ export default function Screen(): ReactElement {
             : null
         }
         keyExtractor={(item, index): string => index.toString()}
-        data={data?.friends}
+        data={friends}
         renderItem={renderItem}
         ListEmptyComponent={
           <EmptyListItem>{getString('NO_CONTENT')}</EmptyListItem>

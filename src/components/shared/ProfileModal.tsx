@@ -112,7 +112,7 @@ const styles: Styles = {
 
 const Shared = forwardRef<Ref, Props>((props, ref) => {
   let modal: Modal | null;
-  const [deleteFriendMutation] = useMutation<{ id: string }, MutationDeleteFriend>(MUTATION_DELETE_FRIEND);
+  const [deleteFriendMutation, { error: deleteFriendError, loading: deleteFriendLoading }] = useMutation<{ id: string }, MutationDeleteFriend>(MUTATION_DELETE_FRIEND);
   const [showAddBtn, setShowAddBtn] = useState(true);
   const [isFriendAdded, setIsFriendAdded] = useState(false);
   const [user, setUser] = useState<User>({
@@ -125,8 +125,8 @@ const Shared = forwardRef<Ref, Props>((props, ref) => {
   });
 
   const [addFriendMutation] = useMutation<
-  { addFriend: User },
-  { friendId: string }
+    { addFriend: User },
+    { friendId: string }
   >(MUTATION_ADD_FRIEND, {
     refetchQueries: () => [{ query: QUERY_FRIENDS }],
   });
@@ -138,8 +138,6 @@ const Shared = forwardRef<Ref, Props>((props, ref) => {
   });
 
   const {
-    friendState: { friends },
-    addFriend: ctxAddFriend,
     deleteFriend: ctxDeleteFriend,
   } = useFriendContext();
 
@@ -221,23 +219,23 @@ const Shared = forwardRef<Ref, Props>((props, ref) => {
         <StyledView>
           <TouchableOpacity
             activeOpacity={0.5}
-            // onPress={goToProfile}
+          // onPress={goToProfile}
           >
             {photoURL ? (
               <StyledImage style={{ alignSelf: 'center' }} source={imageURL} />
             ) : (
-              <View
-                style={{
-                  width: 80,
-                  height: 80,
-                  alignSelf: 'center',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Ionicons name="ios-person" size={80} color="white" />
-              </View>
-            )}
+                <View
+                  style={{
+                    width: 80,
+                    height: 80,
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Ionicons name="ios-person" size={80} color="white" />
+                </View>
+              )}
           </TouchableOpacity>
           <StyledTextDisplayName numberOfLines={1}>
             {nickname}
