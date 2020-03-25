@@ -63,7 +63,7 @@ export const MUTATION_ADD_FRIEND = gql`
 `;
 
 export interface MutationDeleteFriend {
-  friendId: string; 
+  friendId: string;
 }
 
 export const MUTATION_DELETE_FRIEND = gql`

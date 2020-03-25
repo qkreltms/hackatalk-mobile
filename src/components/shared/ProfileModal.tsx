@@ -1,18 +1,17 @@
+import { MUTATION_ADD_FRIEND, MUTATION_DELETE_FRIEND, MutationDeleteFriend } from '../../graphql/mutations';
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { TouchableOpacity, View, ViewStyle } from 'react-native';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 
 import { Ionicons } from '@expo/vector-icons';
-import { MUTATION_ADD_FRIEND } from '../../graphql/mutations';
 import Modal from 'react-native-modalbox';
 import { QUERY_FRIENDS } from '../../graphql/queries';
 import { User } from '../../types';
 import { getString } from '../../../STRINGS';
-import styled from 'styled-components/native';
-import { useThemeContext } from '@dooboo-ui/native-theme';
 import { showAlertForGrpahqlError } from '../../utils/common';
-import { MutationDeleteFriend, MUTATION_DELETE_FRIEND } from '../../graphql/mutations';
+import styled from 'styled-components/native';
 import { useFriendContext } from '../../providers/FriendProvider';
+import { useThemeContext } from '@dooboo-ui/native-theme';
 
 const StyledView = styled.View`
   margin-top: 40px;
@@ -112,7 +111,9 @@ const styles: Styles = {
 
 const Shared = forwardRef<Ref, Props>((props, ref) => {
   let modal: Modal | null;
-  const [deleteFriendMutation, { error: deleteFriendError, loading: deleteFriendLoading }] = useMutation<{ id: string }, MutationDeleteFriend>(MUTATION_DELETE_FRIEND);
+  const [deleteFriendMutation, {
+    error: deleteFriendError, loading: deleteFriendLoading,
+  }] = useMutation<{ id: string }, MutationDeleteFriend>(MUTATION_DELETE_FRIEND);
   const [showAddBtn, setShowAddBtn] = useState(true);
   const [isFriendAdded, setIsFriendAdded] = useState(false);
   const [user, setUser] = useState<User>({
@@ -125,8 +126,8 @@ const Shared = forwardRef<Ref, Props>((props, ref) => {
   });
 
   const [addFriendMutation] = useMutation<
-    { addFriend: User },
-    { friendId: string }
+  { addFriend: User },
+  { friendId: string }
   >(MUTATION_ADD_FRIEND, {
     refetchQueries: () => [{ query: QUERY_FRIENDS }],
   });
@@ -172,7 +173,7 @@ const Shared = forwardRef<Ref, Props>((props, ref) => {
     }
 
     const variables = {
-      friendId: user.id
+      friendId: user.id,
     };
 
     try {
@@ -224,18 +225,18 @@ const Shared = forwardRef<Ref, Props>((props, ref) => {
             {photoURL ? (
               <StyledImage style={{ alignSelf: 'center' }} source={imageURL} />
             ) : (
-                <View
-                  style={{
-                    width: 80,
-                    height: 80,
-                    alignSelf: 'center',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Ionicons name="ios-person" size={80} color="white" />
-                </View>
-              )}
+              <View
+                style={{
+                  width: 80,
+                  height: 80,
+                  alignSelf: 'center',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Ionicons name="ios-person" size={80} color="white" />
+              </View>
+            )}
           </TouchableOpacity>
           <StyledTextDisplayName numberOfLines={1}>
             {nickname}
@@ -290,7 +291,3 @@ const Shared = forwardRef<Ref, Props>((props, ref) => {
 });
 
 export default Shared;
-
-
-
-

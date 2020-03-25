@@ -10,9 +10,9 @@ import { User } from '../../types';
 import UserListItem from '../shared/UserListItem';
 import { getString } from '../../../STRINGS';
 import styled from 'styled-components/native';
+import { useFriendContext } from '../../providers/FriendProvider';
 import { useProfileContext } from '../../providers/ProfileModalProvider';
 import { useQuery } from '@apollo/react-hooks';
-import { useFriendContext } from '../../providers/FriendProvider';
 
 const Container = styled.View`
   flex: 1;
@@ -28,7 +28,7 @@ export default function Screen(): ReactElement {
     friendState: { friends },
     setFriends: ctxSetFriends,
   } = useFriendContext();
-  
+
   // prettier-ignore
   const { loading, data, error, refetch } = useQuery<{
     friends: User[];
@@ -40,7 +40,7 @@ export default function Screen(): ReactElement {
     if (friends) {
       ctxSetFriends(friends);
     }
-  }, [data])
+  }, [data]);
 
   const userListOnPress = (user: User): void => {
     if (state.modal) {
