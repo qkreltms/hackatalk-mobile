@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement } from 'react';
 
 import { ApolloQueryResult } from 'apollo-client';
 import EmptyListItem from '../shared/EmptyListItem';
@@ -10,7 +10,6 @@ import { User } from '../../types';
 import UserListItem from '../shared/UserListItem';
 import { getString } from '../../../STRINGS';
 import styled from 'styled-components/native';
-import { useFriendContext } from '../../providers/FriendProvider';
 import { useProfileContext } from '../../providers/ProfileModalProvider';
 import { useQuery } from '@apollo/react-hooks';
 
@@ -24,10 +23,6 @@ const Container = styled.View`
 
 export default function Screen(): ReactElement {
   const { state, showModal } = useProfileContext();
-  const {
-    friendState: { friends },
-    setFriends: ctxSetFriends,
-  } = useFriendContext();
 
   // prettier-ignore
   const { loading, data, error, refetch } = useQuery<{
@@ -35,12 +30,6 @@ export default function Screen(): ReactElement {
   }>(QUERY_FRIENDS, {
     fetchPolicy: 'network-only',
   });
-  useEffect(() => {
-    const friends = data?.friends;
-    if (friends) {
-      ctxSetFriends(friends);
-    }
-  }, [data]);
 
   const userListOnPress = (user: User): void => {
     if (state.modal) {
@@ -93,7 +82,7 @@ export default function Screen(): ReactElement {
         }}
         contentContainerStyle={
           // prettier-ignore
-          friends.length === 0
+          data?.friends.length === 0
             ? {
               flex: 1,
               alignItems: 'center',
@@ -102,7 +91,7 @@ export default function Screen(): ReactElement {
             : null
         }
         keyExtractor={(item, index): string => index.toString()}
-        data={friends}
+        data={data?.friends}
         renderItem={renderItem}
         ListEmptyComponent={
           <EmptyListItem>{getString('NO_CONTENT')}</EmptyListItem>

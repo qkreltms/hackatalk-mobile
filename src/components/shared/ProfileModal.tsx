@@ -113,7 +113,8 @@ const Shared = forwardRef<Ref, Props>((props, ref) => {
   let modal: Modal | null;
   const [deleteFriendMutation, {
     error: deleteFriendError, loading: deleteFriendLoading,
-  }] = useMutation<{ id: string }, MutationDeleteFriend>(MUTATION_DELETE_FRIEND);
+  }] = useMutation<{ id: string }, MutationDeleteFriend>(MUTATION_DELETE_FRIEND,
+    { refetchQueries: [{ query: QUERY_FRIENDS }] });
   const [showAddBtn, setShowAddBtn] = useState(true);
   const [isFriendAdded, setIsFriendAdded] = useState(false);
   const [user, setUser] = useState<User>({
@@ -178,7 +179,6 @@ const Shared = forwardRef<Ref, Props>((props, ref) => {
 
     try {
       await deleteFriendMutation({ variables });
-      ctxDeleteFriend(user);
     } catch ({ graphQLErrors }) {
       showAlertForGrpahqlError(graphQLErrors);
     }
