@@ -1,38 +1,25 @@
-import { MockedProvider, MockedResponse } from '@apollo/react-testing';
-import React, { ReactElement } from 'react';
-import { render, wait } from '@testing-library/react-native';
-import Friend from '../../screen/Friend';
-import { QUERY_FRIENDS } from '../../../graphql/queries';
-import { createTestElement } from '../../../../test/testUtils';
+import { RenderResult, render, wait } from '@testing-library/react-native';
+import { createTestElement, createTestProps } from '../../../../test/testUtils';
+import React from 'react';
+import Shared from '../ProfileModal';
 
 describe('[ProfileModal] rendering test', () => {
-  const setup = (mocks?: Array<MockedResponse>): ReactElement => {
-    // Insert mock at index of 0
-    mocks && mocks.unshift({
-      request: {
-        query: QUERY_FRIENDS,
-      },
-      result: {
-        data: {
-          friends: [{
-            id: 'aa11',
-            photoURL: '',
-            name: 'testName',
-          }],
-        },
-      },
-    });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let props: any;
+  let component: React.ReactElement;
+  let testingLib: RenderResult;
 
-    return createTestElement(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Friend />
-      </MockedProvider>);
-  };
+  beforeEach(() => {
+    props = createTestProps();
+    component = createTestElement(<Shared {...props} />);
+    testingLib = render(component);
+  });
 
   it('Render without crashing', async () => {
+    const { baseElement } = testingLib;
     await wait(() => {
-      const component = render(setup());
-      expect(component).toMatchSnapshot();
+      expect(baseElement).toMatchSnapshot();
+      expect(baseElement).toBeTruthy();
     });
   });
 });
